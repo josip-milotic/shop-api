@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('price_list_product', function (Blueprint $table) {
-            $table->foreignId('category_id')->references('id')->on('categories');
+            $table->foreignId('price_list_id')->references('id')->on('price_lists');
             $table->foreignId('product_id')->references('id')->on('products');
-            $table->primary(['category_id', 'product_id']);
+            $table->primary(['price_list_id', 'product_id']);
             $table->string('name');
             $table->string('price');
             $table->string('sku', 64);
