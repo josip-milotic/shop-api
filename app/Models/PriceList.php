@@ -36,7 +36,7 @@ class PriceList extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('name', 'price', 'sku');
     }
 
     public function users(): HasMany
