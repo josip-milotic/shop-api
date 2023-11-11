@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('product_id')->references('id')->on('products');
             $table->primary(['price_list_id', 'product_id']);
             $table->string('name');
-            $table->string('price');
+            $table->decimal('price');
+            // Should SKU be the same for a product regardless of the price list. If so, duplicate the data? If not,
+            // is it unique per price list?
             $table->string('sku', 64);
             $table->timestamps();
         });

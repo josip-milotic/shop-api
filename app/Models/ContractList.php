@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class ContractList
  *
  * @property int $id
- * @property string $price
+ * @property double $price
  * @property string $sku
  * @property int $user_id
  * @property int $product_id

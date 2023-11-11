@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('contract_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('price');
+            $table->decimal('price');
+            // Same thing as with price lists
             $table->string('sku', 64);
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('product_id')->references('id')->on('products');
