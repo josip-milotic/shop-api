@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property Collection|ContractList[] $contractLists
  * @property Collection|Order[] $orders
+ * @property PriceList $priceList
  *
  * @package App\Models
  */
@@ -58,4 +60,9 @@ class User extends Model
     {
 		return $this->hasMany(Order::class);
 	}
+
+    public function priceList(): BelongsTo
+    {
+        return $this->belongsTo(PriceList::class);
+    }
 }

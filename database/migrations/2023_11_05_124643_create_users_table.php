@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->foreignId('price_list_id')->references('id')->on('price_lists');
             $table->rememberToken();
             $table->timestamps();
         });
