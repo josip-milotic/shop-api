@@ -67,6 +67,10 @@ class ProductController extends Controller
             $request->input('page', 1),
             $request->input('order_by', 'id'),
             $request->input('order', 'asc'),
+            $request->input('price_min'),
+            $request->input('price_max'),
+            $request->input('name'),
+            $request->input('category_ids'),
         );
 
         return response()->json($products);
