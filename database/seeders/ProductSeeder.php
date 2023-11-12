@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\TaxCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,8 +15,10 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        $taxCategory = TaxCategory::query()->first();
+
         for ($i = 0; $i < 20000; $i += self::CHUNK_SIZE) {
-            $products = Product::factory()->count(self::CHUNK_SIZE)->raw();
+            $products = Product::factory()->for($taxCategory)->count(self::CHUNK_SIZE)->raw();
 
             DB::table('products')->insert($products);
         }

@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property Carbon|null $updated_at
  *
  * @property Collection|Category[] $categories
+ * @property TaxCategory|null $taxCategory
  * @property Collection|ContractList[] $contractLists
  * @property Collection|Order[] $orders
  * @property Collection|PriceList[] $priceLists
@@ -46,12 +48,18 @@ class Product extends Model
         'price',
         'sku',
         'stock',
-        'published'
+        'published',
+        'tax_category_id'
     ];
 
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function taxCategory(): BelongsTo
+    {
+        return $this->belongsTo(TaxCategory::class);
     }
 
     public function contractLists(): HasMany
