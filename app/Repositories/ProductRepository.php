@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepository
 {
-    public function getProductsForUser(User $user, int $pageSize, int $page): Collection
+    public function getProducts(User $user, int $pageSize, int $page): Collection
     {
         return $this->getFinalProducts($user)
             ->limit($pageSize)
@@ -19,14 +19,14 @@ class ProductRepository
             ->get();
     }
 
-    public function getProductForUser(User $user, int $productId): ?Model
+    public function getProduct(User $user, int $productId): ?Model
     {
         return $this->getFinalProducts($user)
             ->where('products.id', $productId)
             ->first();
     }
 
-    public function getProductsForUserInCategory(User $user, int $pageSize, int $page, int $categoryId): Collection
+    public function getProductsInCategory(User $user, int $pageSize, int $page, int $categoryId): Collection
     {
         return $this->getFinalProducts($user)
             ->whereHas('categories', function ($query) use ($categoryId) {
@@ -37,15 +37,32 @@ class ProductRepository
             ->get();
     }
 
+    public function getFilteredProducts(User $user, int $pageSize, int $page, string $orderBy, string $order): Collection
+    {
+        return $this->getFinalProducts($user)
+            ->orderBy($orderBy, $order)
+            ->limit($pageSize)
+            ->offset($pageSize * ($page - 1))
+            ->get();
+    }
+
     protected function getFinalProducts(User $user): Builder
     {
         return Product::query()->select(
             'products.id',
-            'price_list_product.name',
-            DB::raw('COALESCE(contract_lists.price, price_list_product.price) as price'),
-            DB::raw('COALESCE(contract_lists.sku, price_list_product.sku) as sku'),
+            'products.name',
+            'products.sku',
+            'products.stock',
+            'products.created_at',
+            DB::raw('COALESCE(contract_lists.price, price_list_product.price, products.price) as price'),
         )
-            ->join('price_list_product', 'products.id', '=', 'price_list_product.product_id')
+            ->leftJoin('price_list_product', function ($join) use ($user) {
+                $join->on('products.id', '=', 'price_list_product.product_id')
+                    ->where(function ($query) use ($user) {
+                        $query->where('price_list_product.price_list_id', $user->price_list_id)
+                            ->orWhereNull('price_list_product.price_list_id');
+                    });
+            })
             ->leftJoin('contract_lists', function ($join) use ($user) {
                 $join->on('products.id', '=', 'contract_lists.product_id')
                     ->where(function ($query) use ($user) {
@@ -53,7 +70,6 @@ class ProductRepository
                             ->orWhereNull('contract_lists.user_id');
                     });
             })
-            ->where('products.published', true)
-            ->where('price_list_product.price_list_id', $user->price_list_id);
+            ->where('products.published', true);
     }
 }

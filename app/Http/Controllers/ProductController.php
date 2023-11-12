@@ -18,7 +18,7 @@ class ProductController extends Controller
         // TODO: change after implementing auth
         $user = auth()->user() ?: User::first();
 
-        $products = $this->productRepository->getProductsForUser(
+        $products = $this->productRepository->getProducts(
             $user,
             $request->input('page_size', 10),
             $request->input('page', 1)
@@ -32,7 +32,7 @@ class ProductController extends Controller
         // TODO: change after implementing auth
         $user = auth()->user() ?: User::first();
 
-        $product = $this->productRepository->getProductForUser($user, $productId);
+        $product = $this->productRepository->getProduct($user, $productId);
 
         if (!$product) {
             abort(404, 'Not found');
@@ -46,28 +46,29 @@ class ProductController extends Controller
         // TODO: change after implementing auth
         $user = auth()->user() ?: User::first();
 
-        $productList = $this->productRepository->getProductsForUserInCategory(
+        $products = $this->productRepository->getProductsInCategory(
             $user,
             $request->input('page_size', 10),
             $request->input('page', 1),
             $categoryId
         );
 
-        return response()->json($productList);
+        return response()->json($products);
     }
 
-    public function getFiltered(Request $request, int $categoryId): JsonResponse
+    public function getFiltered(Request $request): JsonResponse
     {
         // TODO: change after implementing auth
         $user = auth()->user() ?: User::first();
 
-        $productList = $this->productRepository->getProductsForUserInCategory(
+        $products = $this->productRepository->getFilteredProducts(
             $user,
             $request->input('page_size', 10),
             $request->input('page', 1),
-            $categoryId
+            $request->input('order_by', 'id'),
+            $request->input('order', 'asc'),
         );
 
-        return response()->json($productList);
+        return response()->json($products);
     }
 }
