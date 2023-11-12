@@ -18,13 +18,13 @@ class ProductController extends Controller
         // TODO: change after implementing auth
         $user = auth()->user() ?: User::first();
 
-        $productsList = $this->productRepository->getProductsForUser(
+        $products = $this->productRepository->getProductsForUser(
             $user,
             $request->input('page_size', 10),
             $request->input('page', 1)
         );
 
-        return response()->json($productsList);
+        return response()->json($products);
     }
 
     public function show(int $productId): JsonResponse
@@ -39,5 +39,35 @@ class ProductController extends Controller
         }
 
         return response()->json($product);
+    }
+
+    public function getInCategory(Request $request, int $categoryId): JsonResponse
+    {
+        // TODO: change after implementing auth
+        $user = auth()->user() ?: User::first();
+
+        $productList = $this->productRepository->getProductsForUserInCategory(
+            $user,
+            $request->input('page_size', 10),
+            $request->input('page', 1),
+            $categoryId
+        );
+
+        return response()->json($productList);
+    }
+
+    public function getFiltered(Request $request, int $categoryId): JsonResponse
+    {
+        // TODO: change after implementing auth
+        $user = auth()->user() ?: User::first();
+
+        $productList = $this->productRepository->getProductsForUserInCategory(
+            $user,
+            $request->input('page_size', 10),
+            $request->input('page', 1),
+            $categoryId
+        );
+
+        return response()->json($productList);
     }
 }

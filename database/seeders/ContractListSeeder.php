@@ -22,8 +22,7 @@ class ContractListSeeder extends Seeder
                 $contractList[] = [
                     'product_id' => $product->id,
                     'user_id' => $user->id,
-                    'price' => $product->price,
-                    'sku' => $product->sku,
+                    'price' => $product->price * (rand(0, 20) / 10),
                     'created_at' => now()->format('Y-m-d H:i:s'),
                     'updated_at' => now()->format('Y-m-d H:i:s'),
                 ];

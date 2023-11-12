@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price');
             $table->string('sku', 64)->unique();
+            $table->integer('stock')->default(0);
             $table->boolean('published')->default(false);
             $table->timestamps();
         });

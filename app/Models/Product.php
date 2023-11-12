@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Class Product
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property double $price
  * @property string $sku
+ * @property int $stock
  * @property bool $published
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -35,34 +37,40 @@ class Product extends Model
 {
     use HasFactory;
 
-	protected $casts = [
-		'published' => 'bool'
-	];
+    protected $casts = [
+        'published' => 'bool'
+    ];
 
-	protected $fillable = [
-		'name',
-		'price',
-		'sku',
-		'published'
-	];
+    protected $fillable = [
+        'name',
+        'price',
+        'sku',
+        'stock',
+        'published'
+    ];
 
-	public function categories(): BelongsToMany
+    public function categories(): BelongsToMany
     {
-		return $this->belongsToMany(Category::class);
-	}
+        return $this->belongsToMany(Category::class);
+    }
 
-	public function contractLists(): HasMany
+    public function contractLists(): HasMany
     {
-		return $this->hasMany(ContractList::class);
-	}
+        return $this->hasMany(ContractList::class);
+    }
 
-	public function orders(): BelongsToMany
+    public function orders(): BelongsToMany
     {
-		return $this->BelongsToMany(Order::class);
-	}
+        return $this->BelongsToMany(Order::class);
+    }
 
-	public function priceLists(): BelongsToMany
+    public function priceLists(): HasManyThrough
     {
-		return $this->belongsToMany(PriceList::class);
-	}
+        return $this->hasManyThrough(
+            PriceList::class,
+            PriceListProduct::class,
+            'product_id',
+            'id',
+        );
+    }
 }

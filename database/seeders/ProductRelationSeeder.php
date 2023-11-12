@@ -36,9 +36,7 @@ class ProductRelationSeeder extends Seeder
                     $productPriceList[] = [
                         'product_id' => $product->id,
                         'price_list_id' => $priceList->id,
-                        'name' => $product->name,
-                        'price' => $product->price,
-                        'sku' => $product->sku,
+                        'price' => $product->price * (rand(0, 20) / 10),
                         'created_at' => now()->format('Y-m-d H:i:s'),
                         'updated_at' => now()->format('Y-m-d H:i:s'),
                     ];

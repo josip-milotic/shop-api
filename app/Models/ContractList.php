@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property double $price
- * @property string $sku
  * @property int $user_id
  * @property int $product_id
  * @property Carbon|null $created_at
@@ -30,7 +29,6 @@ class ContractList extends Model
 {
 	protected $fillable = [
 		'price',
-		'sku',
 		'user_id',
 		'product_id'
 	];

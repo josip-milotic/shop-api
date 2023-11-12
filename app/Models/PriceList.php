@@ -9,8 +9,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 
 /**
@@ -34,9 +34,14 @@ class PriceList extends Model
 		'name'
 	];
 
-    public function products(): BelongsToMany
+    public function products(): HasManyThrough
     {
-        return $this->belongsToMany(Product::class)->withPivot('name', 'price', 'sku');
+        return $this->hasManyThrough(
+            Product::class,
+            PriceListProduct::class,
+            'price_list_id',
+            'id',
+        );
     }
 
     public function users(): HasMany

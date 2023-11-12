@@ -12,15 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('price_list_product', function (Blueprint $table) {
+            $table->id();
+            $table->decimal('price');
             $table->foreignId('price_list_id')->references('id')->on('price_lists');
             $table->foreignId('product_id')->references('id')->on('products');
-            $table->primary(['price_list_id', 'product_id']);
-            $table->string('name');
-            $table->decimal('price');
-            // Should SKU be the same for a product regardless of the price list. If so, duplicate the data? If not,
-            // is it unique per price list?
-            $table->string('sku', 64);
             $table->timestamps();
+
+            $table->unique(['price_list_id', 'product_id']);
         });
     }
 
