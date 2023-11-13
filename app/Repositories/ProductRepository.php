@@ -59,7 +59,7 @@ class ProductRepository
             ->when($categoryIds, function ($query) use ($categoryIds) {
                 return $query->whereHas('categories', function ($query) use ($categoryIds) {
                     return $query->whereIn('id', $categoryIds);
-                });
+                }, '=', count($categoryIds));
             })
             ->orderBy($orderBy, $order)
             ->limit($pageSize)
