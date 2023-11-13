@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_product', function (Blueprint $table) {
-            $table->foreignId('order_id')->references('id')->on('categories');
+            $table->foreignId('order_id')->references('id')->on('orders');
             $table->foreignId('product_id')->references('id')->on('products');
             $table->decimal('price');
             $table->integer('quantity');

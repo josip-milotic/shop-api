@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductFilterRequest;
+use App\Http\Requests\ProductRequest;
+use App\Models\Category;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -12,8 +14,10 @@ class ProductController extends Controller
     {
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(ProductRequest $request): JsonResponse
     {
+        $request->validated();
+
         $products = $this->productRepository->getProducts(
             auth()->user(),
             $request->input('page_size', 10),
@@ -34,8 +38,11 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    public function getInCategory(Request $request, int $categoryId): JsonResponse
+    public function getInCategory(ProductRequest $request, int $categoryId): JsonResponse
     {
+        Category::query()->findOrFail($categoryId);
+        $request->validated();
+
         $products = $this->productRepository->getProductsInCategory(
             auth()->user(),
             $request->input('page_size', 10),
@@ -46,13 +53,15 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function getFiltered(Request $request): JsonResponse
+    public function getFiltered(ProductFilterRequest $request): JsonResponse
     {
+        $request->validated();
+
         $products = $this->productRepository->getFilteredProducts(
             auth()->user(),
             $request->input('page_size', 10),
             $request->input('page', 1),
-            $request->input('order_by', 'id'),
+            $request->input('order_by', 'name'),
             $request->input('order', 'asc'),
             $request->input('price_min'),
             $request->input('price_max'),
