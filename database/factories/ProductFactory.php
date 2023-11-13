@@ -21,7 +21,6 @@ class ProductFactory extends Factory
             'name' => $this->faker->word,
             'price' => $this->faker->randomFloat(2, 1, 1000),
             'sku' => Str::upper($this->faker->bothify('????????')),
-            'stock' => $this->faker->randomDigit(),
             'published' => $this->faker->boolean(80),
             'created_at' => now()->format('Y-m-d H:i:s'),
             'updated_at' => now()->format('Y-m-d H:i:s'),

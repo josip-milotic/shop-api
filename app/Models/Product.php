@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\DB;
  * @property string $name
  * @property double $price
  * @property string $sku
- * @property int $stock
  * @property bool $published
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -49,7 +48,6 @@ class Product extends Model
         'name',
         'price',
         'sku',
-        'stock',
         'published',
         'tax_category_id'
     ];
@@ -93,7 +91,6 @@ class Product extends Model
             'products.id',
             'products.name',
             'products.sku',
-            'products.stock',
             'products.tax_category_id',
             'products.created_at',
             DB::raw('COALESCE(contract_lists.price, price_list_product.price, products.price) as price'),
