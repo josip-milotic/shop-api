@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Product
@@ -80,5 +82,36 @@ class Product extends Model
             'product_id',
             'id',
         );
+    }
+
+    /**
+     * Scope a query to get products for user that take into account price and contract lists.
+     */
+    public function scopeForUser(Builder $query, User $user): void
+    {
+        $query->select(
+            'products.id',
+            'products.name',
+            'products.sku',
+            'products.stock',
+            'products.tax_category_id',
+            'products.created_at',
+            DB::raw('COALESCE(contract_lists.price, price_list_product.price, products.price) as price'),
+        )
+            ->leftJoin('price_list_product', function ($join) use ($user) {
+                $join->on('products.id', '=', 'price_list_product.product_id')
+                    ->where(function ($query) use ($user) {
+                        $query->where('price_list_product.price_list_id', $user->price_list_id)
+                            ->orWhereNull('price_list_product.price_list_id');
+                    });
+            })
+            ->leftJoin('contract_lists', function ($join) use ($user) {
+                $join->on('products.id', '=', 'contract_lists.product_id')
+                    ->where(function ($query) use ($user) {
+                        $query->where('contract_lists.user_id', $user->id)
+                            ->orWhereNull('contract_lists.user_id');
+                    });
+            })
+            ->where('products.published', true);
     }
 }

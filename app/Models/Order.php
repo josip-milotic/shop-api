@@ -24,7 +24,6 @@ use Illuminate\Support\Collection;
  * @property string $address
  * @property string $city
  * @property string $country
- * @property array $price_modifiers
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -44,12 +43,7 @@ class Order extends Model
 		'address',
 		'city',
 		'country',
-        'price_modifiers'
 	];
-
-    protected $casts = [
-        'price_modifiers' => 'array'
-    ];
 
 	public function user(): BelongsTo
     {

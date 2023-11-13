@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,3 +24,4 @@ Route::get('products', [ProductController::class, 'index']);
 Route::get('products/filtered', [ProductController::class, 'getFiltered']);
 Route::get('categories/{category_id}/products', [ProductController::class, 'getInCategory']);
 Route::get('products/{product_id}', [ProductController::class, 'show']);
+Route::post('orders', [OrderController::class, 'store']);
