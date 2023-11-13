@@ -15,11 +15,8 @@ class ProductController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        // TODO: change after implementing auth
-        $user = auth()->user() ?: User::first();
-
         $products = $this->productRepository->getProducts(
-            $user,
+            auth()->user(),
             $request->input('page_size', 10),
             $request->input('page', 1)
         );
@@ -29,10 +26,7 @@ class ProductController extends Controller
 
     public function show(int $productId): JsonResponse
     {
-        // TODO: change after implementing auth
-        $user = auth()->user() ?: User::first();
-
-        $product = $this->productRepository->getProduct($user, $productId);
+        $product = $this->productRepository->getProduct(auth()->user(), $productId);
 
         if (!$product) {
             abort(404, 'Not found');
@@ -43,11 +37,8 @@ class ProductController extends Controller
 
     public function getInCategory(Request $request, int $categoryId): JsonResponse
     {
-        // TODO: change after implementing auth
-        $user = auth()->user() ?: User::first();
-
         $products = $this->productRepository->getProductsInCategory(
-            $user,
+            auth()->user(),
             $request->input('page_size', 10),
             $request->input('page', 1),
             $categoryId
@@ -58,11 +49,8 @@ class ProductController extends Controller
 
     public function getFiltered(Request $request): JsonResponse
     {
-        // TODO: change after implementing auth
-        $user = auth()->user() ?: User::first();
-
         $products = $this->productRepository->getFilteredProducts(
-            $user,
+            auth()->user(),
             $request->input('page_size', 10),
             $request->input('page', 1),
             $request->input('order_by', 'id'),
