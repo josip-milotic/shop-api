@@ -8,10 +8,15 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\TaxCategory;
 use App\Models\User;
+use App\Repositories\OrderRepository;
 use Illuminate\Support\Arr;
 
 class OrderService
 {
+    public function __construct(protected OrderRepository $orderRepository)
+    {
+    }
+
     public function createOrder(User $user, array $parameters): Order
     {
         $productCollection = collect(Arr::get($parameters, 'products', []));
@@ -28,8 +33,7 @@ class OrderService
         $discounts = Discount::query()->whereIn('id', Arr::get($parameters, 'discount_ids', []))->get();
 
         $totalPrice = 0;
-
-        $forAttach = [];
+        $orderProducts = [];
 
         // To get the final price for each product, the tax is applied after discounts for the sake of simplicity.
         // In reality, this should probably be configurable as these rules vary
@@ -48,14 +52,13 @@ class OrderService
 
             $totalPrice = Calculator::add($totalPrice, Calculator::multiply($price, $quantity));
 
-            $forAttach[$product->id] = [
+            $orderProducts[$product->id] = [
                 'price' => $price,
                 'quantity' => $quantity,
             ];
         }
 
-        /** @var Order $order */
-        $order = Order::query()->create([
+        return $this->orderRepository->create([
             'user_id' => $user->id,
             'total_price' => $totalPrice,
             'first_name' => Arr::get($parameters, 'first_name'),
@@ -64,10 +67,6 @@ class OrderService
             'address' => Arr::get($parameters, 'address'),
             'city' => Arr::get($parameters, 'city'),
             'country' => Arr::get($parameters, 'country'),
-        ]);
-
-        $order->products()->sync($forAttach);
-
-        return $order;
+        ], $orderProducts);
     }
 }
