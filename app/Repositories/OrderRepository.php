@@ -3,16 +3,19 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
 
 class OrderRepository
 {
     public function create(array $parameters, array $products): Order
     {
-        /** @var Order $order */
-        $order = Order::query()->create($parameters);
+        return DB::transaction(function () use ($parameters, $products) {
+            /** @var Order $order */
+            $order = Order::query()->create($parameters);
 
-        $order->products()->sync($products);
+            $order->products()->sync($products);
 
-        return $order;
+            return $order;
+        });
     }
 }
